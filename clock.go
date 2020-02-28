@@ -36,7 +36,7 @@ func (screen *home) Update(s State, up, down, left, right bool) (state State, cu
 
 	// Handle events.
 	if up {
-		current = alarmStateScreen
+		current = clockScreen
 		return
 	}
 
@@ -46,9 +46,9 @@ func (screen *home) Update(s State, up, down, left, right bool) (state State, cu
 	return
 }
 
-type alarmState struct{}
+type clock struct{}
 
-func (screen *alarmState) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+func (screen *clock) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
 	// Set the output state.
 	state = s
 	// Keep on the same screen.
@@ -59,10 +59,34 @@ func (screen *alarmState) Update(s State, up, down, left, right bool) (state Sta
 		current = HomeScreen
 		return
 	}
+	if up {
+		current = calendarScreen
+		return
+	}
 
 	// Update the screen.
-	line1 = "Alarm state"
-	line2 = fmt.Sprintf("%s %v", s.Time().Format("15:04:05"), s.AlarmEnabled)
+	line1 = "Time:"
+	line2 = fmt.Sprintf("%s ", s.Time().Format("15:04:05"))
+	return
+}
+
+type calendar struct{}
+
+func (screen *calendar) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+	// Set the output state.
+	state = s
+	// Keep on the same screen.
+	current = screen
+
+	// Handle events.
+	if down {
+		current = clockScreen
+		return
+	}
+
+	// Update the screen.
+	line1 = "Date:"
+	line2 = fmt.Sprintf("%s ", s.Time().Format("Mon 02/01/2006"))
 	return
 }
 
@@ -70,4 +94,5 @@ func (screen *alarmState) Update(s State, up, down, left, right bool) (state Sta
 
 // HomeScreen of the system.
 var HomeScreen Screen = &home{}
-var alarmStateScreen Screen = &alarmState{}
+var clockScreen Screen = &clock{}
+var calendarScreen Screen = &calendar{}

@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/headblockhead/alarmclock"
@@ -45,6 +47,10 @@ func initialiseLCD() {
 
 func main() {
 	initialiseLCD()
+
+	// Handle ctrl+c.
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, os.Interrupt, syscall.SIGTERM)
 
 	rpio.Open()
 	defer rpio.Close()
@@ -94,7 +100,13 @@ func main() {
 			display.Goto(1, 0)
 			display.Print(line2 + "                ")
 		}
-		time.Sleep(time.Millisecond)
+		select {
+		case <-sigs:
+			display.Clear()
+			return
+		case <-time.After(time.Millisecond):
+			break
+		}
 	}
 }
 
