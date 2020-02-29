@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"reflect"
 	"syscall"
 	"time"
 
@@ -46,7 +47,7 @@ func main() {
 	state := alarmclock.NewState()
 	screen := alarmclock.HomeScreen
 	state, screen, line1, line2 := screen.Update(state, false, false, false, false)
-	render(s, line1, line2)
+	render(s, line1, line2, reflect.TypeOf(screen).String())
 
 	go func() {
 		for {
@@ -86,7 +87,7 @@ Loop:
 		var kpe keypressEvent
 		// Wait for a keypress, but render at least once per second.
 		select {
-		case _ = <-time.After(time.Second):
+		case _ = <-time.After(time.Millisecond * 20):
 		case kpe = <-events:
 		case <-ctx.Done():
 			break Loop
@@ -105,7 +106,7 @@ Loop:
 		if line1 != newLine1 || line2 != newLine2 {
 			line1 = newLine1
 			line2 = newLine2
-			render(s, line1, line2)
+			render(s, line1, line2, reflect.TypeOf(newScreen).String())
 		}
 	}
 
@@ -114,7 +115,7 @@ Loop:
 
 var lcdStyle = tcell.StyleDefault.Background(tcell.ColorBlue).Foreground(tcell.ColorWhite)
 
-func render(s tcell.Screen, line1, line2 string) {
+func render(s tcell.Screen, line1, line2 string, debug string) {
 	// Clear everything.
 	for y := 0; y < 4; y++ {
 		for x := 0; x < 18; x++ {
@@ -127,6 +128,15 @@ func render(s tcell.Screen, line1, line2 string) {
 	}
 	for i := 0; i < len(line2); i++ {
 		s.SetContent(i+1, 2, rune(line2[i]), nil, lcdStyle)
+	}
+
+	debugStyle := tcell.StyleDefault.Background(tcell.ColorBlack).Foreground(tcell.ColorWhite)
+	w, _ := s.Size()
+	for x := 0; x < w; x++ {
+		s.SetContent(x, 4, ' ', nil, debugStyle)
+	}
+	for i := 0; i < len(debug); i++ {
+		s.SetContent(i, 4, rune(debug[i]), nil, debugStyle)
 	}
 
 	s.Show()
