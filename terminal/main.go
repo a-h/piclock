@@ -9,8 +9,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/a-h/piclock"
 	"github.com/gdamore/tcell"
-	"github.com/headblockhead/alarmclock"
 )
 
 type keypressEvent struct {
@@ -44,8 +44,8 @@ func main() {
 	s.Clear()
 
 	events := make(chan keypressEvent)
-	state := alarmclock.NewState()
-	screen := alarmclock.HomeScreen
+	state := piclock.NewState()
+	screen := piclock.HomeScreen
 	state, screen, line1, line2 := screen.Update(state, false, false, false, false)
 	render(s, line1, line2, reflect.TypeOf(screen).String())
 
@@ -94,7 +94,7 @@ Loop:
 		}
 		// Check for updates.
 		var newLine1, newLine2 string
-		var newScreen alarmclock.Screen
+		var newScreen piclock.Screen
 		state, newScreen, newLine1, newLine2 = screen.Update(state, kpe.up, kpe.down, kpe.left, kpe.right)
 		screenUpdated := screen != newScreen
 		screen = newScreen

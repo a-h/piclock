@@ -7,10 +7,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/headblockhead/alarmclock"
 	"github.com/stianeikeland/go-rpio"
 
 	"github.com/a-h/character"
+	"github.com/a-h/piclock"
 	"periph.io/x/periph/conn/i2c"
 	"periph.io/x/periph/conn/i2c/i2creg"
 	"periph.io/x/periph/host"
@@ -59,8 +59,8 @@ func main() {
 	left := Debounce(rpio.Pin(23))
 	right := Debounce(rpio.Pin(24))
 
-	state := alarmclock.NewState()
-	screen := alarmclock.HomeScreen
+	state := piclock.NewState()
+	screen := piclock.HomeScreen
 	var line1, line2 string
 
 	for {
@@ -83,7 +83,7 @@ func main() {
 		}
 		// Check for updates.
 		var newLine1, newLine2 string
-		var newScreen alarmclock.Screen
+		var newScreen piclock.Screen
 		state, newScreen, newLine1, newLine2 = screen.Update(state, upState, downState, leftState, rightState)
 		screenUpdated := screen != newScreen
 		screen = newScreen

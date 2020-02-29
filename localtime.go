@@ -1,4 +1,6 @@
-package main
+package piclock
+
+import "time"
 
 // NewLocalTime creates a new local time source.
 func NewLocalTime(initial time.Time) *LocalTime {
