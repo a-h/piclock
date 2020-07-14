@@ -2,6 +2,7 @@ package piclock
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -165,9 +166,111 @@ func (screen *settingsSetTime) Update(s State, up, down, left, right bool) (stat
 		current = settingsScreen
 		return
 	}
+	if up {
+		current = settingsSetAlarmTimeScreen
+		return
+	}
 	// Update the screen.
 	line1 = "Settings:"
 	line2 = "Set Time~"
+	return
+}
+
+type settingsSetAlarmTime struct{}
+
+func (screen *settingsSetAlarmTime) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+	// Set the output state.
+	state = s
+	// Keep on the same screen.
+	current = screen
+
+	// Handle events.
+
+	if down {
+		current = settingsSetTimeScreen
+		return
+	}
+	if right {
+		current = settingsSettingAlarmTimeHourScreen
+		return
+	}
+	// Update the screen.
+	line1 = "Settings:"
+	line2 = "Set Alarm Time~"
+	return
+}
+
+type settingsSettingAlarmTimeHour struct{}
+
+func (screen *settingsSettingAlarmTimeHour) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+	// Set the output state.
+	state = s
+	// Keep on the same screen.
+	current = screen
+
+	// Handle events.
+
+	if left {
+		current = settingsSetTimeScreen
+		return
+	}
+	if right {
+		current = settingsSettingAlarmTimeMinScreen
+		return
+	}
+	if up {
+		if s.AlarmTimeHour >= 24 {
+			s.AlarmTimeHour = 0
+		} else {
+			s.AlarmTimeHour++
+		}
+		return
+	}
+	if down {
+		if s.AlarmTimeHour <= 0 {
+			s.AlarmTimeHour = 24
+		} else {
+			s.AlarmTimeHour--
+		}
+	}
+	// Update the screen.
+	line1 = "Set Alarm Hour:"
+	line2 = strconv.Itoa(s.AlarmTimeHour) + ":" + strconv.Itoa(s.AlarmTimeMinute)
+	return
+}
+
+type settingsSettingAlarmTimeMin struct{}
+
+func (screen *settingsSettingAlarmTimeMin) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+	// Set the output state.
+	state = s
+	// Keep on the same screen.
+	current = screen
+
+	// Handle events.
+
+	if left {
+		current = settingsSettingAlarmTimeHourScreen
+		return
+	}
+	if up {
+		if s.AlarmTimeMinute >= 60 {
+			s.AlarmTimeMinute = 0
+		} else {
+			s.AlarmTimeHour++
+		}
+		return
+	}
+	if down {
+		if s.AlarmTimeHour <= 0 {
+			s.AlarmTimeHour = 60
+		} else {
+			s.AlarmTimeHour--
+		}
+	}
+	// Update the screen.
+	line1 = "Set Alarm Hour:"
+	line2 = strconv.Itoa(s.AlarmTimeHour) + ":" + strconv.Itoa(s.AlarmTimeMinute)
 	return
 }
 
@@ -258,3 +361,6 @@ var settingsScreen = &settings{}
 var settingsSetTimeScreen = &settingsSetTime{}
 var settingsSettingTimeHourScreen = &settingsSettingTimeHour{}
 var settingsSettingTimeMinScreen = &settingsSettingTimeMin{}
+var settingsSetAlarmTimeScreen = &settingsSetAlarmTime{}
+var settingsSettingAlarmTimeHourScreen = &settingsSettingAlarmTimeHour{}
+var settingsSettingAlarmTimeMinScreen = &settingsSettingAlarmTimeMin{}
