@@ -8,7 +8,7 @@ import (
 
 // Screen in the display.
 type Screen interface {
-	Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string)
+	Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string)
 }
 
 // NewState inititalises the state.
@@ -29,7 +29,7 @@ type State struct {
 
 type home struct{}
 
-func (screen *home) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+func (screen *home) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
 	// Set the output state.
 	state = s
 	// Keep on the same screen.
@@ -49,7 +49,7 @@ func (screen *home) Update(s State, up, down, left, right bool) (state State, cu
 
 type clock struct{}
 
-func (screen *clock) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+func (screen *clock) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
 	// Set the output state.
 	state = s
 	// Keep on the same screen.
@@ -73,7 +73,7 @@ func (screen *clock) Update(s State, up, down, left, right bool) (state State, c
 
 type calendar struct{}
 
-func (screen *calendar) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+func (screen *calendar) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
 	// Set the output state.
 	state = s
 	// Keep on the same screen.
@@ -104,7 +104,7 @@ func onOff(v bool) string {
 	return "Off"
 }
 
-func (screen *alarmState) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+func (screen *alarmState) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
 	// Set the output state.
 	state = s
 	// Keep on the same screen.
@@ -128,7 +128,7 @@ func (screen *alarmState) Update(s State, up, down, left, right bool) (state Sta
 
 type settings struct{}
 
-func (screen *settings) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+func (screen *settings) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
 	// Set the output state.
 	state = s
 	// Keep on the same screen.
@@ -151,7 +151,7 @@ func (screen *settings) Update(s State, up, down, left, right bool) (state State
 
 type settingsSetTime struct{}
 
-func (screen *settingsSetTime) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+func (screen *settingsSetTime) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
 	// Set the output state.
 	state = s
 	// Keep on the same screen.
@@ -178,7 +178,7 @@ func (screen *settingsSetTime) Update(s State, up, down, left, right bool) (stat
 
 type settingsSetAlarmTime struct{}
 
-func (screen *settingsSetAlarmTime) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+func (screen *settingsSetAlarmTime) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
 	// Set the output state.
 	state = s
 	// Keep on the same screen.
@@ -202,7 +202,7 @@ func (screen *settingsSetAlarmTime) Update(s State, up, down, left, right bool) 
 
 type settingsSettingAlarmTimeHour struct{}
 
-func (screen *settingsSettingAlarmTimeHour) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+func (screen *settingsSettingAlarmTimeHour) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
 	// Set the output state.
 	state = s
 	// Keep on the same screen.
@@ -241,7 +241,7 @@ func (screen *settingsSettingAlarmTimeHour) Update(s State, up, down, left, righ
 
 type settingsSettingAlarmTimeMin struct{}
 
-func (screen *settingsSettingAlarmTimeMin) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+func (screen *settingsSettingAlarmTimeMin) Update(s State, up bool, down bool, left bool, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
 	// Set the output state.
 	state = s
 	// Keep on the same screen.
@@ -276,7 +276,7 @@ func (screen *settingsSettingAlarmTimeMin) Update(s State, up, down, left, right
 
 type settingsSettingTimeHour struct{}
 
-func (screen *settingsSettingTimeHour) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+func (screen *settingsSettingTimeHour) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
 	// Set the output state.
 	state = s
 	// Keep on the same screen.
@@ -316,7 +316,7 @@ func (screen *settingsSettingTimeHour) Update(s State, up, down, left, right boo
 
 type settingsSettingTimeMin struct{}
 
-func (screen *settingsSettingTimeMin) Update(s State, up, down, left, right bool) (state State, current Screen, line1, line2 string) {
+func (screen *settingsSettingTimeMin) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
 	// Set the output state.
 	state = s
 	// Keep on the same screen.
