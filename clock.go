@@ -190,6 +190,10 @@ func (screen *settingsSetAlarmTime) Update(s State, up, down, left, right bool, 
 		current = settingsSetTimeScreen
 		return
 	}
+	if left {
+		current = settingsScreen
+		return
+	}
 	if right {
 		current = settingsSettingAlarmTimeHourScreen
 		return
@@ -211,7 +215,7 @@ func (screen *settingsSettingAlarmTimeHour) Update(s State, up, down, left, righ
 	// Handle events.
 
 	if left {
-		current = settingsSetTimeScreen
+		current = settingsSetAlarmTimeScreen
 		return
 	}
 	if right {
@@ -219,23 +223,28 @@ func (screen *settingsSettingAlarmTimeHour) Update(s State, up, down, left, righ
 		return
 	}
 	if up {
-		if s.AlarmTimeHour >= 24 {
-			s.AlarmTimeHour = 0
+		if s.AlarmTimeHour > 22 {
+			state.AlarmTimeHour = 0
 		} else {
-			s.AlarmTimeHour++
+			state.AlarmTimeHour++
 		}
 		return
 	}
 	if down {
 		if s.AlarmTimeHour <= 0 {
-			s.AlarmTimeHour = 24
+			state.AlarmTimeHour = 23
 		} else {
-			s.AlarmTimeHour--
+			state.AlarmTimeHour--
 		}
+		return
 	}
 	// Update the screen.
 	line1 = "Set Alarm Hour:"
-	line2 = strconv.Itoa(s.AlarmTimeHour) + ":" + strconv.Itoa(s.AlarmTimeMinute)
+	if s.AlarmTimeMinute < 10 {
+		line2 = strconv.Itoa(s.AlarmTimeHour) + ":" + "0" + strconv.Itoa(s.AlarmTimeMinute)
+	} else {
+		line2 = strconv.Itoa(s.AlarmTimeHour) + ":" + strconv.Itoa(s.AlarmTimeMinute)
+	}
 	return
 }
 
@@ -254,23 +263,28 @@ func (screen *settingsSettingAlarmTimeMin) Update(s State, up bool, down bool, l
 		return
 	}
 	if up {
-		if s.AlarmTimeMinute >= 60 {
-			s.AlarmTimeMinute = 0
+		if s.AlarmTimeMinute > 58 {
+			state.AlarmTimeMinute = 0
 		} else {
-			s.AlarmTimeHour++
+			state.AlarmTimeMinute++
 		}
 		return
 	}
 	if down {
-		if s.AlarmTimeHour <= 0 {
-			s.AlarmTimeHour = 60
+		if s.AlarmTimeMinute <= 0 {
+			state.AlarmTimeMinute = 59
 		} else {
-			s.AlarmTimeHour--
+			state.AlarmTimeMinute--
 		}
+		return
 	}
 	// Update the screen.
-	line1 = "Set Alarm Hour:"
-	line2 = strconv.Itoa(s.AlarmTimeHour) + ":" + strconv.Itoa(s.AlarmTimeMinute)
+	line1 = "Set Alarm Minute:"
+	if s.AlarmTimeMinute < 10 {
+		line2 = strconv.Itoa(s.AlarmTimeHour) + ":" + "0" + strconv.Itoa(s.AlarmTimeMinute)
+	} else {
+		line2 = strconv.Itoa(s.AlarmTimeHour) + ":" + strconv.Itoa(s.AlarmTimeMinute)
+	}
 	return
 }
 
