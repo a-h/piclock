@@ -198,6 +198,9 @@ func (screen *settingsSetAlarmTime) Update(s State, up, down, left, right bool, 
 		current = settingsSettingAlarmTimeHourScreen
 		return
 	}
+	if up {
+		current = settingsSetAlarmToggleScreen
+	}
 	// Update the screen.
 	line1 = "Settings:"
 	line2 = "Set Alarm Time~"
@@ -223,7 +226,7 @@ func (screen *settingsSettingAlarmTimeHour) Update(s State, up, down, left, righ
 		return
 	}
 	if up {
-		if s.AlarmTimeHour > 22 {
+		if state.AlarmTimeHour > 23 {
 			state.AlarmTimeHour = 0
 		} else {
 			state.AlarmTimeHour++
@@ -231,7 +234,7 @@ func (screen *settingsSettingAlarmTimeHour) Update(s State, up, down, left, righ
 		return
 	}
 	if down {
-		if s.AlarmTimeHour <= 0 {
+		if state.AlarmTimeHour <= 0 {
 			state.AlarmTimeHour = 23
 		} else {
 			state.AlarmTimeHour--
@@ -240,10 +243,10 @@ func (screen *settingsSettingAlarmTimeHour) Update(s State, up, down, left, righ
 	}
 	// Update the screen.
 	line1 = "Set Alarm Hour:"
-	if s.AlarmTimeMinute < 10 {
-		line2 = strconv.Itoa(s.AlarmTimeHour) + ":" + "0" + strconv.Itoa(s.AlarmTimeMinute)
+	if state.AlarmTimeMinute < 10 {
+		line2 = strconv.Itoa(state.AlarmTimeHour) + ":" + "0" + strconv.Itoa(state.AlarmTimeMinute)
 	} else {
-		line2 = strconv.Itoa(s.AlarmTimeHour) + ":" + strconv.Itoa(s.AlarmTimeMinute)
+		line2 = strconv.Itoa(state.AlarmTimeHour) + ":" + strconv.Itoa(state.AlarmTimeMinute)
 	}
 	return
 }
@@ -263,7 +266,7 @@ func (screen *settingsSettingAlarmTimeMin) Update(s State, up bool, down bool, l
 		return
 	}
 	if up {
-		if s.AlarmTimeMinute > 58 {
+		if state.AlarmTimeMinute > 59 {
 			state.AlarmTimeMinute = 0
 		} else {
 			state.AlarmTimeMinute++
@@ -271,7 +274,7 @@ func (screen *settingsSettingAlarmTimeMin) Update(s State, up bool, down bool, l
 		return
 	}
 	if down {
-		if s.AlarmTimeMinute <= 0 {
+		if state.AlarmTimeMinute <= 0 {
 			state.AlarmTimeMinute = 59
 		} else {
 			state.AlarmTimeMinute--
@@ -364,6 +367,62 @@ func (screen *settingsSettingTimeMin) Update(s State, up, down, left, right bool
 	return
 }
 
+type settingsSetAlarmToggle struct{}
+
+func (screen *settingsSetAlarmToggle) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
+	// Set the output state.
+	state = s
+	// Keep on the same screen.
+	current = screen
+
+	// Handle events.
+
+	if down {
+		current = settingsSetAlarmTimeScreen
+		return
+	}
+	if left {
+		current = settingsScreen
+		return
+	}
+	if right {
+		current = settingsSettingAlarmToggleScreen
+		return
+	}
+	// Update the screen.
+	line1 = "Settings:"
+	line2 = "Toggle Alarm~"
+	return
+}
+
+type settingsSettingAlarmToggle struct{}
+
+func (screen *settingsSettingAlarmToggle) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
+	// Set the output state.
+	state = s
+	// Keep on the same screen.
+	current = screen
+
+	// Handle events.
+
+	if down {
+		state.AlarmEnabled = false
+		return
+	}
+	if left {
+		current = settingsScreen
+		return
+	}
+	if up {
+		state.AlarmEnabled = true
+		return
+	}
+	// Update the screen.
+	line1 = "Toggle Alarm:"
+	line2 = onOff(state.AlarmEnabled)
+	return
+}
+
 // Screens of the system.
 
 // HomeScreen is the first screen that gets loaded.
@@ -378,3 +437,5 @@ var settingsSettingTimeMinScreen = &settingsSettingTimeMin{}
 var settingsSetAlarmTimeScreen = &settingsSetAlarmTime{}
 var settingsSettingAlarmTimeHourScreen = &settingsSettingAlarmTimeHour{}
 var settingsSettingAlarmTimeMinScreen = &settingsSettingAlarmTimeMin{}
+var settingsSetAlarmToggleScreen = &settingsSetAlarmToggle{}
+var settingsSettingAlarmToggleScreen = &settingsSettingAlarmToggle{}
