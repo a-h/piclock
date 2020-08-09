@@ -98,18 +98,18 @@ func (screen *calendar) Update(s State, up, down, left, right bool, AlarmTimeHou
 
 type alarmState struct{}
 
-func onOff(v bool) string {
-	if v {
+func onOff(a bool) string {
+	if a {
 		return "On"
 	}
 	return "Off"
 }
-func alarmtypedecoder(v int) string {
-	if v == 0 {
+func alarmtypedecoder(a int) string {
+	if a == 0 {
 		return "SDCARD~"
-	} else if v == 1 {
+	} else if a == 1 {
 		return "SDCARD SHUFFLE"
-	} else if v == 2 {
+	} else if a == 2 {
 		return "GLADOS"
 	}
 	return "ERR"
