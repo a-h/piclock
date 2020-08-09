@@ -25,7 +25,7 @@ type State struct {
 	AlarmTimeHour   int
 	AlarmTimeMinute int
 	Volume          int
-	GladosMode      bool
+	AlarmType       int
 }
 
 type home struct{}
@@ -103,6 +103,16 @@ func onOff(v bool) string {
 		return "On"
 	}
 	return "Off"
+}
+func alarmtypedecoder(v int) string {
+	if v == 0 {
+		return "SDCARD~"
+	} else if v == 1 {
+		return "SDCARD SHUFFLE"
+	} else if v == 2 {
+		return "GLADOS"
+	}
+	return "ERR"
 }
 
 func (screen *alarmState) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
@@ -391,7 +401,7 @@ func (screen *settingsSetAlarmToggle) Update(s State, up, down, left, right bool
 		return
 	}
 	if up {
-		current = settingsSetAlarmToggleGladosScreen
+		current = settingsSetAlarmTypeScreen
 		return
 	}
 	// Update the screen.
@@ -428,9 +438,9 @@ func (screen *settingsSettingAlarmToggle) Update(s State, up, down, left, right 
 	return
 }
 
-type settingsSetAlarmToggleGlados struct{}
+type settingsSetAlarmToggleType struct{}
 
-func (screen *settingsSetAlarmToggleGlados) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
+func (screen *settingsSetAlarmToggleType) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
 	// Set the output state.
 	state = s
 	// Keep on the same screen.
@@ -447,18 +457,18 @@ func (screen *settingsSetAlarmToggleGlados) Update(s State, up, down, left, righ
 		return
 	}
 	if right {
-		current = settingsSettingAlarmToggleGladosScreen
+		current = settingsSettingAlarmToggleTypeScreen
 		return
 	}
 	// Update the screen.
 	line1 = "Settings:"
-	line2 = "Toggle Glados~"
+	line2 = "Alarm Type~"
 	return
 }
 
-type settingsSettingAlarmToggleGlados struct{}
+type settingsSettingAlarmToggleType struct{}
 
-func (screen *settingsSettingAlarmToggleGlados) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
+func (screen *settingsSettingAlarmToggleType) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
 	// Set the output state.
 	state = s
 	// Keep on the same screen.
@@ -466,21 +476,20 @@ func (screen *settingsSettingAlarmToggleGlados) Update(s State, up, down, left, 
 
 	// Handle events.
 
-	if down {
-		state.GladosMode = false
-		return
+	if up && state.AlarmType < 2 {
+		state.AlarmType++
 	}
-	if up {
-		state.GladosMode = true
-		return
+	if down && state.AlarmType > 0 {
+		state.AlarmType--
 	}
+
 	if left {
-		current = settingsSetAlarmToggleGladosScreen
+		current = settingsSetAlarmTypeScreen
 		return
 	}
 	// Update the screen.
-	line1 = "Glados:"
-	line2 = onOff(state.GladosMode)
+	line1 = "Alarm Type:"
+	line2 = alarmtypedecoder(state.AlarmType)
 	return
 }
 
@@ -495,11 +504,11 @@ var settingsScreen = &settings{}
 var settingsSetTimeScreen = &settingsSetTime{}
 var settingsSetAlarmTimeScreen = &settingsSetAlarmTime{}
 var settingsSetAlarmToggleScreen = &settingsSetAlarmToggle{}
-var settingsSetAlarmToggleGladosScreen = &settingsSetAlarmToggleGlados{}
+var settingsSetAlarmTypeScreen = &settingsSetAlarmToggleType{}
 
 var settingsSettingTimeHourScreen = &settingsSettingTimeHour{}
 var settingsSettingTimeMinScreen = &settingsSettingTimeMin{}
 var settingsSettingAlarmTimeHourScreen = &settingsSettingAlarmTimeHour{}
 var settingsSettingAlarmTimeMinScreen = &settingsSettingAlarmTimeMin{}
 var settingsSettingAlarmToggleScreen = &settingsSettingAlarmToggle{}
-var settingsSettingAlarmToggleGladosScreen = &settingsSettingAlarmToggleGlados{}
+var settingsSettingAlarmToggleTypeScreen = &settingsSettingAlarmToggleType{}
