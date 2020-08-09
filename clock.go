@@ -25,6 +25,7 @@ type State struct {
 	AlarmTimeHour   int
 	AlarmTimeMinute int
 	Volume          int
+	GladosMode      bool
 }
 
 type home struct{}
@@ -389,6 +390,10 @@ func (screen *settingsSetAlarmToggle) Update(s State, up, down, left, right bool
 		current = settingsSettingAlarmToggleScreen
 		return
 	}
+	if up {
+		current = settingsSetAlarmToggleGladosScreen
+		return
+	}
 	// Update the screen.
 	line1 = "Settings:"
 	line2 = "Toggle Alarm~"
@@ -418,24 +423,83 @@ func (screen *settingsSettingAlarmToggle) Update(s State, up, down, left, right 
 		return
 	}
 	// Update the screen.
-	line1 = "Toggle Alarm:"
+	line1 = "Alarm:"
 	line2 = onOff(state.AlarmEnabled)
+	return
+}
+
+type settingsSetAlarmToggleGlados struct{}
+
+func (screen *settingsSetAlarmToggleGlados) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
+	// Set the output state.
+	state = s
+	// Keep on the same screen.
+	current = screen
+
+	// Handle events.
+
+	if down {
+		current = settingsSetAlarmToggleScreen
+		return
+	}
+	if left {
+		current = settingsScreen
+		return
+	}
+	if right {
+		current = settingsSettingAlarmToggleGladosScreen
+		return
+	}
+	// Update the screen.
+	line1 = "Settings:"
+	line2 = "Toggle Glados~"
+	return
+}
+
+type settingsSettingAlarmToggleGlados struct{}
+
+func (screen *settingsSettingAlarmToggleGlados) Update(s State, up, down, left, right bool, AlarmTimeHour int) (state State, current Screen, line1, line2 string) {
+	// Set the output state.
+	state = s
+	// Keep on the same screen.
+	current = screen
+
+	// Handle events.
+
+	if down {
+		state.GladosMode = false
+		return
+	}
+	if up {
+		state.GladosMode = true
+		return
+	}
+	if left {
+		current = settingsSetAlarmToggleGladosScreen
+		return
+	}
+	// Update the screen.
+	line1 = "Glados:"
+	line2 = onOff(state.GladosMode)
 	return
 }
 
 // Screens of the system.
 
 // HomeScreen is the first screen that gets loaded.
-var HomeScreen Screen = &home{}
-var clockScreen Screen = &clock{}
-var calendarScreen Screen = &calendar{}
 var alarmStateScreen = &alarmState{}
+var calendarScreen Screen = &calendar{}
+var clockScreen Screen = &clock{}
+var HomeScreen Screen = &home{}
 var settingsScreen = &settings{}
 var settingsSetTimeScreen = &settingsSetTime{}
+var settingsSetAlarmTimeScreen = &settingsSetAlarmTime{}
+var settingsSetAlarmToggleScreen = &settingsSetAlarmToggle{}
+var settingsSetAlarmToggleGladosScreen = &settingsSetAlarmToggleGlados{}
+
 var settingsSettingTimeHourScreen = &settingsSettingTimeHour{}
 var settingsSettingTimeMinScreen = &settingsSettingTimeMin{}
-var settingsSetAlarmTimeScreen = &settingsSetAlarmTime{}
 var settingsSettingAlarmTimeHourScreen = &settingsSettingAlarmTimeHour{}
 var settingsSettingAlarmTimeMinScreen = &settingsSettingAlarmTimeMin{}
-var settingsSetAlarmToggleScreen = &settingsSetAlarmToggle{}
 var settingsSettingAlarmToggleScreen = &settingsSettingAlarmToggle{}
+var settingsSettingAlarmToggleGladosScreen = &settingsSettingAlarmToggleGlados{}
