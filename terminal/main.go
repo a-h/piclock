@@ -46,7 +46,7 @@ func main() {
 	events := make(chan keypressEvent)
 	state := piclock.NewState()
 	screen := piclock.HomeScreen
-	state, screen, line1, line2 := screen.Update(state, false, false, false, false)
+	state, screen, line1, line2 := screen.Update(state, false, false, false, false, state.AlarmTimeHour)
 	render(s, line1, line2, reflect.TypeOf(screen).String())
 
 	go func() {
@@ -95,12 +95,12 @@ Loop:
 		// Check for updates.
 		var newLine1, newLine2 string
 		var newScreen piclock.Screen
-		state, newScreen, newLine1, newLine2 = screen.Update(state, kpe.up, kpe.down, kpe.left, kpe.right)
+		state, newScreen, newLine1, newLine2 = screen.Update(state, kpe.up, kpe.down, kpe.left, kpe.right, state.AlarmTimeHour)
 		screenUpdated := screen != newScreen
 		screen = newScreen
 		// If the screen has changed, render the new screen.
 		if screenUpdated {
-			state, newScreen, newLine1, newLine2 = screen.Update(state, kpe.up, kpe.down, kpe.left, kpe.right)
+			state, newScreen, newLine1, newLine2 = screen.Update(state, kpe.up, kpe.down, kpe.left, kpe.right, state.AlarmTimeHour)
 		}
 		// Only update when the screen needs it.
 		if line1 != newLine1 || line2 != newLine2 {
